@@ -96,18 +96,26 @@ var questions = [
 var questCount = 0;
 var correct = 0;
 var wrong = 0;
+var time = 15;
+var interval;
+var gameStarted = false;
 
 console.log(correct);
 console.log(wrong);
 
 // Function that builds the question to the page
 function question() {
+    clearTimeout(questTimeout);
+    clearInterval(interval);
+    time = 15;
+    interval = setInterval(timer, 1000);
     var questDiv = $("<div>");
-    var questText = $("<h3>" + questions[questCount].questionText + "<h3>");
-    var questOpt1 = $("<p>" + questions[questCount].option1 + "<p>");
-    var questOpt2 = $("<p>" + questions[questCount].option2 + "<p>");
-    var questOpt3 = $("<p>" + questions[questCount].option3 + "<p>");
-    var questOpt4 = $("<p>" + questions[questCount].option4 + "<p>");
+    var questText = $("<h3>" + questions[questCount].questionText + "</h3>");
+    var questOpt1 = $("<p>" + questions[questCount].option1 + "</p>");
+    var questOpt2 = $("<p>" + questions[questCount].option2 + "</p>");
+    var questOpt3 = $("<p>" + questions[questCount].option3 + "</p>");
+    var questOpt4 = $("<p>" + questions[questCount].option4 + "</p>");
+    var timeDisp = $("<h4>" + "Time Remaining: " + time + "</h4>");
 
     $(questOpt1).addClass("answer");
     $(questOpt2).addClass("answer");
@@ -117,6 +125,7 @@ function question() {
     $(questOpt2).attr("answer", questions[questCount].option2);
     $(questOpt3).attr("answer", questions[questCount].option3);
     $(questOpt4).attr("answer", questions[questCount].option4);
+    $(timeDisp).attr("id", "timeDiv");
 
 
     questDiv.append(questText);
@@ -124,30 +133,41 @@ function question() {
     questDiv.append(questOpt2);
     questDiv.append(questOpt3);
     questDiv.append(questOpt4);
+    questDiv.append(timeDisp);
 
     $("#body").html(questDiv);
     
-    
+    var questTimeout = setTimeout (function() {
+        questCount++;
+        if (questCount >= questions.length) {
+            clearTimeout(questTimeout);
+            gameOver ()
+        }
+        question ();
+    }, 15000);
 
     // Answer Listener
     $(".answer").on("click", function(){
         console.log(this);
+        
         var answerChosen = $(this).attr("answer");
         var answerCorrect = questions[questCount].correct;
     
         console.log(answerChosen);
         console.log(answerCorrect);
-    
+        questCount++
         
-        if (answerChosen === answerCorrect) {
+        if (questCount >= questions.length) {
+            gameOver (answerChosen, answerCorrect)
+        } else if (answerChosen === answerCorrect) {
             correct++
-            questCount++
             console.log(correct);
+            console.log(wrong)
             question()
         }
         else {
             wrong++
-            questCount++
+            console.log(correct);
             console.log(wrong)
             question()
         }
@@ -156,9 +176,54 @@ function question() {
 
 //This function starts the game, sends the user to the first Q
 function gameOn() {
+    gameStarted = true;
     console.log("The Game is afoot!");
     console.log(questions[questCount]);
+    questCount = 0;
+    correct = 0;
+    wrong = 0;
     question()
+}
+
+function gameOver(user, right) {
+    gameStarted = false;
+    if (user === right) {
+        correct++
+        console.log(correct);
+        console.log(wrong);
+    }
+    else {
+        wrong++
+        console.log(correct);
+        console.log(wrong);
+    }
+
+    var endDiv = $("<div>");
+    var endHeader = $("<h2>" + "That is the end of the Quiz!" + "</h2>");
+    var endResults = $("<p>" + "You got: " + correct + "/10 correct!" + "</p>");
+    var endAsk = $("<p>" + "Would you like to try again?" + "</p>");
+    var reBtn = $("<input type='button' value='Restart'/>");
+
+    reBtn.attr("id", "restart");
+    endDiv.append(endHeader);
+    endDiv.append(endResults);
+    endDiv.append(endAsk);
+    endDiv.append(reBtn);
+
+    $("#body").html(endDiv);
+
+    $("#restart").click(function(){
+        gameOn();
+    });
+}
+
+function timer() {
+    if (time === 0) {
+        clearInterval(interval);
+    } else {
+        $("#timeDiv").html("Time Remaining: " + time);
+        time--;
+    }
 }
 
 // Listener on start button that calls the start of the game function
