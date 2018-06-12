@@ -1,4 +1,20 @@
+body {
+    background-image: url("images/dust_scratches.png");
+    background-color: #cccccc;
+}
+
 .answer:hover {
-    background: teal;
+    background: aqua;
+    border-left: 5px blue solid;
+
+}
+
+div {
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 50px;
+    background: beige;
+    border: 2px solid black;
+    padding: 10px;
 
 }

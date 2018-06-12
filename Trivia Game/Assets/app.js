@@ -105,10 +105,15 @@ console.log(wrong);
 
 // Function that builds the question to the page
 function question() {
+    // Clear and reset the timers
     clearTimeout(questTimeout);
     clearInterval(interval);
     time = 15;
+
+    // Set display timer
     interval = setInterval(timer, 1000);
+
+    // Builds each Question
     var questDiv = $("<div>");
     var questText = $("<h3>" + questions[questCount].questionText + "</h3>");
     var questOpt1 = $("<p>" + questions[questCount].option1 + "</p>");
@@ -137,6 +142,7 @@ function question() {
 
     $("#body").html(questDiv);
     
+    // Question Timer
     var questTimeout = setTimeout (function() {
         questCount++;
         if (questCount >= questions.length) {
@@ -174,7 +180,7 @@ function question() {
     });
 }
 
-//This function starts the game, sends the user to the first Q
+// This function starts the game, sends the user to the first Q
 function gameOn() {
     gameStarted = true;
     console.log("The Game is afoot!");
@@ -185,6 +191,7 @@ function gameOn() {
     question()
 }
 
+// This function ends the game, and displays the results and a restart button
 function gameOver(user, right) {
     gameStarted = false;
     if (user === right) {
@@ -198,6 +205,7 @@ function gameOver(user, right) {
         console.log(wrong);
     }
 
+    // Builds the endgame screen
     var endDiv = $("<div>");
     var endHeader = $("<h2>" + "That is the end of the Quiz!" + "</h2>");
     var endResults = $("<p>" + "You got: " + correct + "/10 correct!" + "</p>");
@@ -212,11 +220,13 @@ function gameOver(user, right) {
 
     $("#body").html(endDiv);
 
+    // Restart button listener
     $("#restart").click(function(){
         gameOn();
     });
 }
 
+// This function operates the timer dislay
 function timer() {
     if (time === 0) {
         clearInterval(interval);
