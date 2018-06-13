@@ -236,7 +236,6 @@ function timer() {
     } else {
         time--;
         $("#timeDiv").html("Time Remaining: " + time);
-        // time--;
     }
 }
 
