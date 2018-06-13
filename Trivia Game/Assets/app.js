@@ -105,10 +105,10 @@ console.log(wrong);
 
 // Function that builds the question to the page
 function question() {
-    // Clear and reset the timers
-    clearTimeout(questTimeout);
-    clearInterval(interval);
+    // Reset Time
     time = 15;
+
+    clearInterval(interval);
 
     // Set display timer
     interval = setInterval(timer, 1000);
@@ -155,6 +155,9 @@ function question() {
     // Answer Listener
     $(".answer").on("click", function(){
         console.log(this);
+        // Clear timers
+        clearTimeout(questTimeout);
+        clearInterval(interval);
         
         var answerChosen = $(this).attr("answer");
         var answerCorrect = questions[questCount].correct;
@@ -231,8 +234,9 @@ function timer() {
     if (time === 0) {
         clearInterval(interval);
     } else {
-        $("#timeDiv").html("Time Remaining: " + time);
         time--;
+        $("#timeDiv").html("Time Remaining: " + time);
+        // time--;
     }
 }
 
